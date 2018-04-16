@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import user from './default-profile-image.jpg';
+import $ from 'jquery';
 import alertify from 'alertifyjs';
 import 'alertifyjs/build/css/alertify.min.css';
 import 'alertifyjs/build/css/themes/semantic.min.css';
@@ -28,8 +28,6 @@ class Content extends React.Component {
     this.state = {
       isModalShow: false,
       prayerItem: [],
-      praying: [],
-      answered: [],
       title: '',
       about: '',
       created_at: ''
@@ -103,6 +101,22 @@ class Content extends React.Component {
     );
   }
 
+  componentDidMount() {
+    $.ajax({
+      url: 'prayer',
+      type: 'get',
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function(data) {
+        console.log();
+      }.bind(this),
+      error: function(a, b, c) {
+        console.log(a + b + c);
+      }
+    });
+  }
+
   handleInputChange(event) {
     const target = event.target;
     const value = target.type === 'text' ? target.value : target.value;
@@ -128,15 +142,34 @@ class Content extends React.Component {
       title: '',
       about: '',
       isModalShow: false,
-      notification: 'asdfasdlf'
     }));
 
-    alertify.message('Successfully added a prayer');
+    this.insert();
   }
 
   allowDrop(event) {
     event.preventDefault();
-  } 
+  }
+
+  insert() {
+    $.ajax({
+      url: 'prayer',
+      type: 'post',
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      data: {
+        'title': $('input[name=title]').val(),
+        'about': $('textarea[name=about]').val()
+      },
+      success: function(data) {
+        alertify.message(data);
+      },
+      error: function(a, b, c) {
+        console.log(a + b + c);
+      }
+    });
+  }
 
   drop(event, category) {
     event.preventDefault();
