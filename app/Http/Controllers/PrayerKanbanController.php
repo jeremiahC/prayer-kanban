@@ -18,8 +18,8 @@ class PrayerKanbanController extends Controller
 
         if ($prayerItem) {
             foreach ($prayerItem as $item) {
-                $category = config('prayer_category')[$item->status];
-                $item->status = $category;
+                $category = config('prayer_category')[$item->category];
+                $item->category = $category;
             }
             return response()->json($prayerItem, 200);
         }
@@ -48,7 +48,11 @@ class PrayerKanbanController extends Controller
         $prayerItem = new PrayerItem();
 
         if ($prayerItem->store($request->all())) {
-            return response()->json('Successfully added a new prayer', 200);
+            $item = $prayerItem->find($prayerItem->id);
+            $category = config('prayer_category')[$item->category];
+            $item->category = $category;
+
+            return response()->json($item, 200);
         }
 
         return response()->json('error', 500);
@@ -83,9 +87,9 @@ class PrayerKanbanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, PrayerItem $prayer)
     {
-        //
+        
     }
 
     /**

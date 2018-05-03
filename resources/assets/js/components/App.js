@@ -4,6 +4,7 @@ import $ from 'jquery';
 import alertify from 'alertifyjs';
 import 'alertifyjs/build/css/alertify.min.css';
 import 'alertifyjs/build/css/themes/semantic.min.css';
+import axios from 'axios';
 
 class Navbar extends React.Component {
   render() {
@@ -38,6 +39,17 @@ class Content extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.drag = this.drag.bind(this);
+  }s
+
+  componentDidMount() {
+    axios.get('/prayer')
+      .then(response => {
+        this.setState({
+          prayerItem: response.data
+        });
+      }).catch(function (error) {
+        console.log(error);
+      });
   }
 
   render() {
@@ -101,22 +113,6 @@ class Content extends React.Component {
     );
   }
 
-  componentDidMount() {
-    $.ajax({
-      url: 'prayer',
-      type: 'get',
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      },
-      success: function(data) {
-        console.log();
-      }.bind(this),
-      error: function(a, b, c) {
-        console.log(a + b + c);
-      }
-    });
-  }
-
   handleInputChange(event) {
     const target = event.target;
     const value = target.type === 'text' ? target.value : target.value;
@@ -137,13 +133,6 @@ class Content extends React.Component {
       created_at: new Date().toJSON().slice(0,10).replace(/-/g,'/')
     }
 
-    this.setState(prevState => ({
-      prayerItem: prevState.prayerItem.concat(prayerItem),
-      title: '',
-      about: '',
-      isModalShow: false,
-    }));
-
     this.insert();
   }
 
@@ -163,12 +152,38 @@ class Content extends React.Component {
         'about': $('textarea[name=about]').val()
       },
       success: function(data) {
-        alertify.message(data);
-      },
+        this.setState(prevState => ({
+          prayerItem: prevState.prayerItem.concat(data),
+          title: '',
+          about: '',
+          isModalShow: false,
+        }));
+      }.bind(this),
       error: function(a, b, c) {
         console.log(a + b + c);
       }
     });
+  }
+
+  update(prayeritem) {
+    prayeritem.map(item => {
+      console.log(item);
+      $.ajax({
+        url: '/prayer/' + item.id,
+        type: 'put',
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: item,
+        success: function (data) {
+          console.log(data);
+        },
+        error: function(a, b, c) {
+          console.log(a + b + c);
+        }
+      });
+    });
+
   }
 
   drop(event, category) {
@@ -179,20 +194,16 @@ class Content extends React.Component {
     let prayeritem = this.state.prayerItem.filter(item => {
       if (item.id == id) {
         item.category = category;
-        item.created_at = new Date().toJSON().slice(0,10).replace(/-/g,'/');
-      }
 
-      return item;
+        return item;
+      }
     });
 
+    this.update(prayeritem);
     this.setState({
       ...this.state,
       prayeritem
     });
-
-    this.setState(prevState => ({
-      praying: prevState.praying.concat(prayeritem),
-    }));
 
     alertify.message('Prayer Status Change to ' + category);
   }

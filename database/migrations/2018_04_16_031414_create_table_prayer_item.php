@@ -17,6 +17,7 @@ class CreateTablePrayerItem extends Migration
             $table->increments('id');
             $table->string('title');
             $table->string('about');
+            $table->tinyInteger('category');
             $table->timestamps();
         });
     }

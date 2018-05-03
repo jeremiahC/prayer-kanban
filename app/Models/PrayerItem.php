@@ -12,12 +12,8 @@ class PrayerItem extends Model
     public function store($request)
     {
     	$this->fill($request);
-    	$this->status = 1;
+    	$this->category = 1;
 
-    	if ($this->save()) {
-    		return true;
-    	}
-
-    	return false;
+        return $this->save();
     }
 }
