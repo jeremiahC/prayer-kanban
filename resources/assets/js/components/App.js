@@ -80,7 +80,7 @@ class Content extends React.Component {
         {this.renderModal(this.state.isModalShow)}
         <div className="kanban">
           <div className="kanban-section">
-            <label className="kanban-label">Prayer</label>
+            <label className="kanban-label">Prayers</label>
             <Add
               onclick={this.openModal}
             />
