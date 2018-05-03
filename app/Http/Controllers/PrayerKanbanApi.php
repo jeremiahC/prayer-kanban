@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\PrayerItem;
+use Illuminate\Http\Request;
 
-class PrayerKanbanController extends Controller
+class PrayerKanbanApi extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,20 +21,10 @@ class PrayerKanbanController extends Controller
                 $category = config('prayer_category')[$item->category];
                 $item->category = $category;
             }
-            return response()->json($prayerItem, 200);
+            return response()->json($prayerItem, 201);
         }
 
         return response()->json('error', 500);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Respon
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -70,17 +60,6 @@ class PrayerKanbanController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -89,7 +68,7 @@ class PrayerKanbanController extends Controller
      */
     public function update(Request $request, PrayerItem $prayer)
     {
-        $attributes = $request->all();
+        $attributes = $request->all()['item'];
         foreach (config('prayer_category') as $key => $category) {
             if ($attributes['category'] === $category) {
                 $attributes['category'] = $key;

@@ -12,4 +12,5 @@
 */
 
 Route::get('/', 'HomeController@index')->name('home');
-Route::resource('prayer', 'PrayerKanbanController');
+// Route::resource('prayer', 'PrayerKanbanController');
+Route::apiResource('prayer', 'PrayerKanbanApi');
