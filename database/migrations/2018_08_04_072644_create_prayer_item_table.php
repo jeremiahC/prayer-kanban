@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePrayerStatusTable extends Migration
+class CreatePrayerItemTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreatePrayerStatusTable extends Migration
      */
     public function up()
     {
-        Schema::create('prayer_status', function (Blueprint $table) {
+        Schema::create('prayer_items', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('status_name');
-            $table->string('description');
+            $table->string('title');
+            $table->string('about');
+            $table->unsignedInteger('status_id');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +29,6 @@ class CreatePrayerStatusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('prayer_status');
+        Schema::dropIfExists('prayer_items');
     }
 }

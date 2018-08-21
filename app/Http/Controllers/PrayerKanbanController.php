@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\PrayerItem;
 use Illuminate\Http\Request;
-use App\Models\PrayerItem;
 
 class PrayerKanbanController extends Controller
 {
@@ -14,23 +14,13 @@ class PrayerKanbanController extends Controller
      */
     public function index()
     {
-        $prayerItem = PrayerItem::all();
-
-        if ($prayerItem) {
-            foreach ($prayerItem as $item) {
-                $category = config('prayer_category')[$item->category];
-                $item->category = $category;
-            }
-            return response()->json($prayerItem, 200);
-        }
-
-        return response()->json('error', 500);
+        //
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Respon
+     * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -47,15 +37,12 @@ class PrayerKanbanController extends Controller
     {
         $prayerItem = new PrayerItem();
 
-        if ($prayerItem->store($request->all())) {
-            $item = $prayerItem->find($prayerItem->id);
-            $category = config('prayer_category')[$item->category];
-            $item->category = $category;
+        $prayerItem->title = $request->title;
+        $prayerItem->about = $request->about;
+        $prayerItem->status_id = $request->status_id;
 
-            return response()->json($item, 200);
-        }
-
-        return response()->json('error', 500);
+        $prayerItem->save();
+        return response()->json($prayerItem, 201);
     }
 
     /**
@@ -87,16 +74,9 @@ class PrayerKanbanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PrayerItem $prayer)
+    public function update(Request $request, $id)
     {
-        $attributes = $request->all();
-        foreach (config('prayer_category') as $key => $category) {
-            if ($attributes['category'] === $category) {
-                $attributes['category'] = $key;
-            }
-        }
-
-        $prayer->updateItem($attributes);
+        //
     }
 
     /**
